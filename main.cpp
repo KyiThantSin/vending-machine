@@ -12,14 +12,10 @@ enum class Denomination : int {
     THB_5 = 5,
     THB_1 = 1
 };
-struct MenuItem{
-    string name;
-    double price;
-    int stock;
-};
 class Menu{
     public:
         vector<MenuItem> menu;
+        vector<MenuItem> items;
 
         Menu(VendingMachineDB& db) {
             menu = {
@@ -32,13 +28,15 @@ class Menu{
 
             for(const auto& item: menu){
                 db.insertItem(item.name, item.price, item.stock);
-            }
+            };
+
+            items = db.getItems();
         }
 
         void display(){
             cout <<  setw(20) << "****Menu****" << endl;
             cout << setw(5) << "Code" << setw(20) << "Name" << setw(20) << "Price" << endl;
-            for(auto item: menu){
+            for(auto item: items){
                 cout << setw(5) << "Code" << setw(20) << item.name << setw(20) << fixed << setprecision(2) << item.price << endl;
             }
         }

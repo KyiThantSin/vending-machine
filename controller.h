@@ -2,6 +2,13 @@
 #include <string>
 using namespace std;
 
+struct MenuItem
+{
+    string name;
+    double price;
+    int stock;
+};
+
 class VendingMachineDB
 {
 private:
@@ -71,4 +78,32 @@ public:
             std::cerr << "Error preparing statement.\n";
         }
     }
+
+    vector<MenuItem> getItems()
+    {
+        vector<MenuItem> items;
+        string table_name = "stock_" + student_id;
+        string sql = "SELECT * FROM " + table_name + ";";
+        sqlite3_stmt *stmt;
+
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK)
+        {
+            while (sqlite3_step(stmt) == SQLITE_ROW)
+            {
+                MenuItem item;
+                item.name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+                item.price = sqlite3_column_double(stmt, 2);
+                item.stock = sqlite3_column_int(stmt, 3);
+
+                items.push_back(item);
+            }
+            sqlite3_finalize(stmt);
+        }
+        else
+        {
+            std::cerr << "Error fetching items.\n";
+        }
+
+        return items;
+    };
 };
