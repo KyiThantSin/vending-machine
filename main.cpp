@@ -104,7 +104,7 @@ class User{
 int main(){
     string choice;
     cout << "*****Vending Machine*****" << endl;
-    cout << "Please choose a login modes \n (1).User (Selling Mode) \n (2).Admin \n: ";
+    cout << "Please choose a login modes \n (1).User (Selling Mode) \n (2).Admin \n Your choice: ";
     cin >> choice;
 
     //database create
