@@ -14,16 +14,15 @@ enum class Denomination : int {
 };
 class Menu{
     public:
-        vector<MenuItem> menu;
         vector<MenuItem> items;
 
         Menu(VendingMachineDB& db) {
-            menu = {
-                {"Coffee", 20.0, 10},
-                {"Tea", 22.0, 10},
-                {"Milk", 15.00, 10 },
-                {"Soda", 14.00, 10},
-                {"Smoothies", 24.00, 10}
+            vector<MenuItem>  menu = {
+                {0,"Coffee", 20.0, 10},
+                {0,"Tea", 22.0, 10},
+                {0,"Milk", 15.00, 10 },
+                {0,"Soda", 14.00, 10},
+                {0,"Smoothies", 24.00, 10}
             };
 
             for(const auto& item: menu){
@@ -36,8 +35,12 @@ class Menu{
         void display(){
             cout <<  setw(20) << "****Menu****" << endl;
             cout << setw(5) << "Code" << setw(20) << "Name" << setw(20) << "Price" << endl;
+            if (items.empty()) {
+                cout << "No items available in the menu." << endl;
+                return;
+            }
             for(auto item: items){
-                cout << setw(5) << "Code" << setw(20) << item.name << setw(20) << fixed << setprecision(2) << item.price << endl;
+                cout << setw(5) << item.id << setw(20) << item.name << setw(20) << fixed << setprecision(2) << item.price << endl;
             }
         }
 };

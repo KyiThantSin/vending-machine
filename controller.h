@@ -4,6 +4,7 @@ using namespace std;
 
 struct MenuItem
 {
+    int id;
     string name;
     double price;
     int stock;
@@ -91,6 +92,7 @@ public:
             while (sqlite3_step(stmt) == SQLITE_ROW)
             {
                 MenuItem item;
+                item.id = sqlite3_column_int(stmt, 0);
                 item.name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
                 item.price = sqlite3_column_double(stmt, 2);
                 item.stock = sqlite3_column_int(stmt, 3);
