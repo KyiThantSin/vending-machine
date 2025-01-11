@@ -18,8 +18,7 @@ private:
     string db_name;
 
 public:
-    VendingMachineDB(string name, string id) : db_name(name), student_id(id)
-    {
+    VendingMachineDB(string name, string id) : db_name(name), student_id(id){
         if (sqlite3_open(db_name.c_str(), &db) != SQLITE_OK)
         {
             throw runtime_error("Error opening database: " + string(sqlite3_errmsg(db)));
@@ -27,16 +26,14 @@ public:
     };
 
     // clean up (close db )
-    ~VendingMachineDB()
-    {
+    ~VendingMachineDB(){
         if (db)
         {
             sqlite3_close(db);
         }
     };
 
-    void createTable()
-    {
+    void createTable(){
         string table_name = "stock_" + student_id;
         string sql = "CREATE TABLE IF NOT EXISTS " + table_name +
                      R"(
@@ -56,8 +53,7 @@ public:
         }
     };
 
-    void insertItem(const string name, double price, int stock)
-    {
+    void insertItem(const string name, double price, int stock){
         string table_name = "stock_" + student_id;
         string sql = "INSERT INTO " + table_name + "(name, price, stock) VALUES (?,?,?);";
 
@@ -80,8 +76,7 @@ public:
         }
     }
 
-    vector<MenuItem> getItems()
-    {
+    vector<MenuItem> getItems(){
         vector<MenuItem> items;
         string table_name = "stock_" + student_id;
         string sql = "SELECT * FROM " + table_name + ";";
@@ -108,4 +103,37 @@ public:
 
         return items;
     };
+
+    MenuItem getItemById(int id){
+        string table_name = "stock_" + student_id;
+        string sql = "SELECT * FROM " + table_name + " WHERE id = ?;";
+        sqlite3_stmt *stmt;
+
+        MenuItem item = {0, "", 0.0, 0};
+
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK)
+        {
+            sqlite3_bind_int(stmt, 1, id);
+
+            if (sqlite3_step(stmt) == SQLITE_ROW)
+            {
+                item.id = sqlite3_column_int(stmt, 0);
+                item.name = reinterpret_cast<const char *>(sqlite3_column_text(stmt, 1));
+                item.price = sqlite3_column_double(stmt, 2);
+                item.stock = sqlite3_column_int(stmt, 3);
+            }
+            else
+            {
+                std::cerr << "Item with ID " << id << " not found.\n";
+            }
+
+            sqlite3_finalize(stmt);
+        }
+        else
+        {
+            std::cerr << "Error preparing statement.\n";
+        }
+
+        return item;
+    }
 };

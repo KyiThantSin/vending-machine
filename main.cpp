@@ -4,7 +4,6 @@
 #include "controller.h"
 using namespace std;
 
-
 enum class Denomination : int {
     THB_100 = 100,
     THB_20 = 20,
@@ -13,9 +12,9 @@ enum class Denomination : int {
     THB_1 = 1
 };
 class Menu{
-    public:
+    private:
         vector<MenuItem> items;
-
+    public:
         Menu(VendingMachineDB& db) {
             vector<MenuItem>  menu = {
                 {0,"Coffee", 20.0, 10},
@@ -45,10 +44,31 @@ class Menu{
         }
 };
 
+class User{
+      private:
+        int slected_code;
+      public:
+        User(VendingMachineDB& db){
+            cout << "Enter a code number to choose the item: ";
+            cin >> slected_code;
+            cout << endl;
+
+            MenuItem item = db.getItemById(slected_code);
+
+            if(item.stock <= 0){
+                cout << "Sorry, Your selected item " << item.name << " is OUT OF STOCK." << endl;
+                return;
+            }
+            cout << "Your selected Item: " << endl;
+            cout << setw(5) << "Code" << setw(20) << "Name" << setw(20) << "Price" << endl;
+            cout << setw(5) << item.id << setw(20) << item.name << setw(20) << item.price << endl;
+        }; 
+};
+
 int main(){
     string choice;
     cout << "*****Vending Machine*****" << endl;
-    cout << "Please choose a login modes \n (1). User (Selling Mode) \n (2).Admin \n Your choice: ";
+    cout << "Please choose a login modes \n (1).User (Selling Mode) \n (2).Admin \n Your choice: ";
     cin >> choice;
 
     //database create
@@ -58,6 +78,7 @@ int main(){
 
     if(choice == "1"){
         menu.display();
+        User user(db);
 
     }else if(choice == "2"){
 
