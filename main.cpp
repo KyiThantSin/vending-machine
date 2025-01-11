@@ -13,7 +13,6 @@ enum class Denomination : int {
     THB_1 = 1
 };
 struct MenuItem{
-    string code;
     string name;
     double price;
     int stock;
@@ -22,19 +21,25 @@ class Menu{
     public:
         vector<MenuItem> menu;
 
-        Menu() : menu({
-            {"011","Coffee", 20.0, 10},
-            {"012","Tea", 22.0, 10},
-            {"013","Milk", 15.00, 10 },
-            {"014","Soda", 14.00, 10},
-            {"015","Smoothies", 24.00, 10}
-        }){}
+        Menu(VendingMachineDB& db) {
+            menu = {
+                {"Coffee", 20.0, 10},
+                {"Tea", 22.0, 10},
+                {"Milk", 15.00, 10 },
+                {"Soda", 14.00, 10},
+                {"Smoothies", 24.00, 10}
+            };
+
+            for(const auto& item: menu){
+                db.insertItem(item.name, item.price, item.stock);
+            }
+        }
 
         void display(){
-            cout << "****Menu****" << endl;
+            cout <<  setw(20) << "****Menu****" << endl;
             cout << setw(5) << "Code" << setw(20) << "Name" << setw(20) << "Price" << endl;
             for(auto item: menu){
-                cout << setw(5) << item.code << setw(20) << item.name << setw(20) << fixed << setprecision(2) << item.price << endl;
+                cout << setw(5) << "Code" << setw(20) << item.name << setw(20) << fixed << setprecision(2) << item.price << endl;
             }
         }
 };
@@ -48,9 +53,9 @@ int main(){
     //database create
     VendingMachineDB db("vendingMachine.db", "67011158");
     db.createTable();
-    
+    Menu menu(db);
+
     if(choice == "1"){
-        Menu menu;
         menu.display();
 
     }else if(choice == "2"){
