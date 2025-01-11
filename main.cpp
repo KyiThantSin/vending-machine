@@ -1,6 +1,7 @@
 #include<iostream>
 #include<vector>
 #include<iomanip>
+#include "controller.h"
 using namespace std;
 
 
@@ -44,6 +45,9 @@ int main(){
     cout << "Please choose a login modes \n (1). User (Selling Mode) \n (2).Admin \n Your choice: ";
     cin >> choice;
 
+    //database create
+    VendingMachineDB db("vendingMachine.db", "67011158");
+    
     if(choice == "1"){
         Menu menu;
         menu.display();
