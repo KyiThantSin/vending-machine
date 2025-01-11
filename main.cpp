@@ -90,6 +90,7 @@ class User{
 
                     if(payment >= item.price){
                         cout << "Payment Succeess!. Change: " << payment - item.price << " THB" << endl;
+                        break;
                     }else{
                         cout << "You still need to pay " << item.price - payment << " THB" << endl;
                     }
@@ -98,14 +99,12 @@ class User{
                 }
             }
         }
-
-
 };
 
 int main(){
     string choice;
     cout << "*****Vending Machine*****" << endl;
-    cout << "Please choose a login modes \n (1).User (Selling Mode) \n (2).Admin \n Your choice: ";
+    cout << "Please choose a login modes \n (1).User (Selling Mode) \n (2).Admin \n: ";
     cin >> choice;
 
     //database create
@@ -116,13 +115,12 @@ int main(){
     if(choice == "1"){
         menu.display();
         User user(db);
-        
-
     }else if(choice == "2"){
 
-    }else{
-        cout << "Please enter a valid choice." << endl;
     }
+    else{
+        cout << "Please enter a valid choice." << endl;
+    }    
 
 
     return 0;              
