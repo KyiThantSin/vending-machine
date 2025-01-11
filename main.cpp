@@ -3,13 +3,20 @@
 #include<iomanip>
 using namespace std;
 
+
+enum class Denomination : int {
+    THB_100 = 100,
+    THB_20 = 20,
+    THB_10 = 10,
+    THB_5 = 5,
+    THB_1 = 1
+};
 struct MenuItem{
     string code;
     string name;
     double price;
     int stock;
 };
-
 class Menu{
     public:
         vector<MenuItem> menu;
@@ -40,10 +47,11 @@ int main(){
     if(choice == "1"){
         Menu menu;
         menu.display();
+
     }else if(choice == "2"){
 
     }else{
-        cout << "Please enter a valid choice" << endl;
+        cout << "Please enter a valid choice." << endl;
     }
 
 
