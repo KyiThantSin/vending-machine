@@ -47,6 +47,7 @@ int main(){
 
     //database create
     VendingMachineDB db("vendingMachine.db", "67011158");
+    db.createTable();
     
     if(choice == "1"){
         Menu menu;
