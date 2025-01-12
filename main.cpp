@@ -4,14 +4,12 @@
 #include "controller.h"
 using namespace std;
 
-class MoneyHandler
-{
+class MoneyHandler{
 private:
     vector<Money> coins;
 
 public:
-    MoneyHandler(VendingMachineDB &db)
-    {
+    MoneyHandler(VendingMachineDB &db){
         vector<Money> coinsList = {
             {0, 100, 0},
             {0, 20, 0},
@@ -26,24 +24,20 @@ public:
             {0, 5, 30},
             {0, 1, 30}};
 
-        for (const auto &coin : coinsList)
-        {
+        for (const auto &coin : coinsList){
             db.insertToCollections(coin.value, coin.quantity);
         };
-        for (const auto &coin : changesList)
-        {
+        for (const auto &coin : changesList){
             db.insertToChangesBox(coin.value, coin.quantity);
         };
     }
 };
-class Menu
-{
+class Menu{
 private:
     vector<MenuItem> items;
 
 public:
-    Menu(VendingMachineDB &db)
-    {
+    Menu(VendingMachineDB &db){
         vector<MenuItem> menu = {
             {0, "Coffee", 20.0, 10},
             {0, "Tea", 22.0, 10},
@@ -52,16 +46,14 @@ public:
             {0, "Smoothies", 24.00, 10},
             {0, "Water", 8.00, 10}};
 
-        for (const auto &item : menu)
-        {
+        for (const auto &item : menu){
             db.insertItem(item.name, item.price, item.stock);
         };
 
         items = db.getItems();
     }
 
-    void display()
-    {
+    void display(){
         cout << setw(20) << "****Menu****" << endl;
         cout << setw(5) << "Code" << setw(20) << "Name" << setw(20) << "Price" << endl;
         if (items.empty())
@@ -75,8 +67,7 @@ public:
         }
     }
 
-    bool isOutOfStock()
-    {
+    bool isOutOfStock(){
         int totalItems = items.size();
         int outOfStockCount = 0;
 
@@ -90,9 +81,18 @@ public:
         return (outOfStockCount >= (totalItems / 2.0));
     }
 };
+class Admin{
+    string choice;
+    public:
+        Admin(VendingMachineDB &db){
+            cout << "(1).Set Initial Stock \n (2).Refill Stock \n (3). Refill Changes \n (4).Check Collection Box \n (5).Check Changes Box \n (6).Collect Money" << endl;
+            cout << "Enter your choice: ";
+            cin >> choice;
 
-class User
-{
+        };
+};
+
+class User{
 private:
     int slected_code;
     MenuItem item;
@@ -233,8 +233,7 @@ public:
     }
 };
 
-int main()
-{
+int main(){
     string choice;
     cout << "*****Vending Machine*****" << endl;
 
@@ -246,41 +245,32 @@ int main()
     Menu menu(db);
     MoneyHandler coins(db);
 
-    while (true)
-    {
+    while (true){
         cout << "Please choose a login modes \n (1).User (Selling Mode) \n (2).Admin \n (3).Exit \n Your choice: ";
         cin >> choice;
 
-        if (choice == "1")
-        {
+        if(choice == "1"){
             menu.display();
             User user(db);
             bool flag = false;
 
             flag = db.isAnyCoinQuantityAtLimit();
 
-            if (flag)
-            {
+            if (flag){
                 break;
             }
-            if (menu.isOutOfStock())
-            {
+            if (menu.isOutOfStock()){
                 cout << "--------------------------" << endl;
                 cout << "Items are OUT OF STOCK at the moment." << endl;
                 cout << "--------------------------" << endl;
                 break;
             }
-        }
-        else if (choice == "2")
-        {
-        }
-        else if (choice == "3")
-        {
+        }else if (choice == "2"){
+            Admin admin(db);
+        }else if (choice == "3"){
             cout << "Exiting the program. Thank you!\n";
             break;
-        }
-        else
-        {
+        }else{
             cout << "Please enter a valid choice." << endl;
         }
     }
