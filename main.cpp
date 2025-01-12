@@ -83,13 +83,38 @@ public:
 };
 class Admin{
     string choice;
-    public:
-        Admin(VendingMachineDB &db){
-            cout << "(1).Set Initial Stock \n (2).Refill Stock \n (3). Refill Changes \n (4).Check Collection Box \n (5).Check Changes Box \n (6).Collect Money" << endl;
-            cout << "Enter your choice: ";
-            cin >> choice;
+public:
+    Admin(VendingMachineDB &db){
+        cout << "***Admin***" << endl;
+        cout << " \n (1).Set Initial Stock \n (2).Refill Stock \n (3). Refill Changes \n (4).Check Collection Box \n (5).Check Changes Box \n (6).Collect Money \n (7).Logout \n "<< endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
 
-        };
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        if(choice == "1"){
+            string name;
+            double price;
+            int stock;
+            cout << "Enter the item name: ";
+            getline(cin, name);
+            cout << "Enter the price: ";
+            cin >> price;
+            cout << "Enter the stock: ";
+            cin >> stock;
+
+            addingNewStock(db, name, price, stock);
+        } else if(choice == "7"){
+            return;
+        } else{
+            cout << "Please enter a valid input." << endl;
+        }
+    }
+
+    void addingNewStock(VendingMachineDB &db, const string &name, double price, int stock){
+        db.insertItem(name, price, stock);
+        cout << "New item added: " << name << " with price " << price << " THB and stock " << stock << endl;
+    }
 };
 
 class User{
@@ -99,8 +124,7 @@ private:
     int payment = 0;
 
 public:
-    User(VendingMachineDB &db)
-    {
+    User(VendingMachineDB &db){
         cout << "Enter a code number to choose the item: ";
         cin >> slected_code;
         cout << endl;
