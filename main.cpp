@@ -86,7 +86,7 @@ class Admin{
 public:
     Admin(VendingMachineDB &db){
         cout << "***Admin***" << endl;
-        cout << " \n (1).Set Initial Stock \n (2).Refill Stock \n (3). Refill Changes \n (4).Check Collection Box \n (5).Check Changes Box \n (6).Collect Money \n (7).Logout \n "<< endl;
+        cout << " \n (1).Set Initial Stock \n (2).Refill Stock \n (3).Refill Changes \n (4).Check Collection Box \n (5).Check Changes Box \n (6).Collect Money \n (7).Logout \n "<< endl;
         cout << "Enter your choice: ";
         cin >> choice;
 
