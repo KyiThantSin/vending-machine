@@ -176,6 +176,16 @@ int main()
         {
             menu.display();
             User user(db);
+            bool flag = false;
+
+            flag = db.isAnyCoinQuantityAtLimit();
+
+            if(flag){
+                cout << "--------------------------" << endl;
+                cout << "Sorry, The collection box is fulled. We can't purchase the items at the moment." << endl;
+                cout << "--------------------------" << endl;
+                return;
+            }
         }
         else if (choice == "2")
         {
