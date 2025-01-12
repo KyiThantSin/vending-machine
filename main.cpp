@@ -28,14 +28,15 @@ private:
     vector<MenuItem> items;
 
 public:
-    Menu(VendingMachineDB &db)
-    {
+    Menu(VendingMachineDB &db){
         vector<MenuItem> menu = {
             {0, "Coffee", 20.0, 10},
             {0, "Tea", 22.0, 10},
             {0, "Milk", 15.00, 10},
             {0, "Soda", 14.00, 10},
-            {0, "Smoothies", 24.00, 10}};
+            {0, "Smoothies", 24.00, 10},
+            {0, "Water", 8.00, 10}
+        };
 
         for (const auto &item : menu)
         {
@@ -45,8 +46,7 @@ public:
         items = db.getItems();
     }
 
-    void display()
-    {
+    void display(){
         cout << setw(20) << "****Menu****" << endl;
         cout << setw(5) << "Code" << setw(20) << "Name" << setw(20) << "Price" << endl;
         if (items.empty())
@@ -55,9 +55,21 @@ public:
             return;
         }
         for (auto item : items)
-        {
+        {   
             cout << setw(5) << item.id << setw(20) << item.name << setw(20) << fixed << setprecision(2) << item.price << endl;
         }
+    }
+
+    bool isOutOfStock(){
+        int totalItems = items.size();
+        int outOfStockCount = 0;
+
+        for(const auto& item: items){
+            if(item.stock <= 0){
+                outOfStockCount++;
+            }
+        }
+        return (outOfStockCount >= (totalItems / 2.0));
     }
 };
 
@@ -109,9 +121,8 @@ public:
             cout << "Please enter the payment amount (100 THB, 20 THB, 10 THB, 5 THB, 1 THB): ";
             cin >> amount;
             cout << "--------------------------" << endl;
-
+            
             bool flag = false;
-
             flag = db.isAnyCoinQuantityAtLimit();
 
             if(flag){
@@ -179,12 +190,18 @@ int main()
             bool flag = false;
 
             flag = db.isAnyCoinQuantityAtLimit();
-
+    
             if(flag){
                 cout << "--------------------------" << endl;
                 cout << "Sorry, The collection box is fulled. We can't purchase the items at the moment." << endl;
                 cout << "--------------------------" << endl;
-                return;
+                break;
+            }
+            if(menu.isOutOfStock()){
+                cout << "--------------------------" << endl;
+                cout << "Items are OUT OF STOCK at the moment." << endl;
+                cout << "--------------------------" << endl;
+                break;
             }
         }
         else if (choice == "2")
