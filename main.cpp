@@ -17,11 +17,21 @@ class MoneyHandler{
             {0,1,0}
         };
 
+        vector<Money> changesList = {
+            {0, 100, 30},
+            {0, 20, 30},
+            {0, 10, 30},
+            {0,5,30},
+            {0,1, 30}
+        };
+
         for (const auto &coin : coinsList){
             db.insertToCollections(coin.value, coin.quantity);
         };
-        }
-
+        for(const auto &coin : changesList){
+            db.insertToChangesBox(coin.value, coin.quantity);
+        };
+    }
 };
 class Menu{
 private:
@@ -175,6 +185,7 @@ int main()
     VendingMachineDB db("vendingMachine.db", "67011158");
     db.createStockTable();
     db.createCollectionBoxTable();
+    db.createChangesBoxTable();
     Menu menu(db);
     MoneyHandler coins(db);
     

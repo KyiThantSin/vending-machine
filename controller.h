@@ -183,8 +183,44 @@ public:
             }
     };
 
+    void createChangesBoxTable(){
+        string table_name = "changes_" + student_id;
+        string sql = "CREATE TABLE IF NOT EXISTS " + table_name + 
+            R"(
+                (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    value INTEGER NOT NULL,
+                    quantity INTEGER NOT NULL CHECK(quantity <= 30)
+                )
+            )";
+            char *errMessage = nullptr;
+            int res = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errMessage);
+            if(res != SQLITE_OK){
+                cerr << "Collection box SQL Error: " << errMessage << endl;
+            }
+    };
+
     void insertToCollections(int value, int quantity){
         string table_name = "collections_" + student_id;
+        string sql = "INSERT INTO " + table_name + "(value, quantity) VALUES (?,?);";
+        sqlite3_stmt *stmt;
+        
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK){
+            sqlite3_bind_int(stmt, 1, value);
+            sqlite3_bind_int(stmt, 2, quantity);
+
+            if (sqlite3_step(stmt) != SQLITE_DONE)
+            {
+                std::cerr << "Error inserting item.\n";
+            }
+            sqlite3_finalize(stmt);
+        }else{
+            std::cerr << "Error preparing statement.\n";
+        }
+    }
+
+    void insertToChangesBox(int value, int quantity){
+        string table_name = "changes_" + student_id;
         string sql = "INSERT INTO " + table_name + "(value, quantity) VALUES (?,?);";
         sqlite3_stmt *stmt;
         
