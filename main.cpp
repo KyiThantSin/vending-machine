@@ -64,7 +64,7 @@ class User{
             cout << setw(5) << "Code" << setw(20) << "Name" << setw(20) << "Price ( THB ) " << endl;
             cout << setw(5) << item.id << setw(20) << item.name << setw(20) << item.price << endl;
 
-            purchase();
+            purchase(db);
         }; 
 
         bool isValidDenomination(int value) {
@@ -77,7 +77,7 @@ class User{
             return false;
         }   
 
-        void purchase(){
+        void purchase(VendingMachineDB& db){
             int amount = 0;
 
             while(amount < item.price){
@@ -90,6 +90,7 @@ class User{
 
                     if(payment >= item.price){
                         cout << "Payment Succeess!. Change: " << payment - item.price << " THB" << endl;
+                        db.updateStockById(item.id);
                         break;
                     }else{
                         cout << "You still need to pay " << item.price - payment << " THB" << endl;
