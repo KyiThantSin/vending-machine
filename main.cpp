@@ -3,8 +3,27 @@
 #include <iomanip>
 #include "controller.h"
 using namespace std;
-class Menu
-{
+
+class MoneyHandler{
+    private:
+        vector<Money> coins;
+    public:
+        MoneyHandler(VendingMachineDB &db){
+        vector<Money> coinsList = {
+            {0, 100, 0},
+            {0, 20, 0},
+            {0, 10, 0},
+            {0,5,0},
+            {0,1,0}
+        };
+
+        for (const auto &coin : coinsList){
+            db.insertToCollections(coin.value, coin.quantity);
+        };
+        }
+
+};
+class Menu{
 private:
     vector<MenuItem> items;
 
@@ -42,8 +61,7 @@ public:
     }
 };
 
-class User
-{
+class User{
 private:
     int slected_code;
     MenuItem item;
@@ -91,6 +109,12 @@ public:
             cout << "Please enter the payment amount (100 THB, 20 THB, 10 THB, 5 THB, 1 THB): ";
             cin >> amount;
 
+            if(cin.fail()){
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                cout << "Please enter a valid input." << endl;
+            }
+
             if (isValidDenomination(amount))
             {
                 payment += amount;
@@ -124,8 +148,9 @@ int main()
     VendingMachineDB db("vendingMachine.db", "67011158");
     db.createStockTable();
     db.createCollectionBoxTable();
-
     Menu menu(db);
+    MoneyHandler coins(db);
+    
     while (true)
     {
         cout << "Please choose a login modes \n (1).User (Selling Mode) \n (2).Admin \n (3).Exit \n Your choice: ";

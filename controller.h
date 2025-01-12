@@ -9,9 +9,9 @@ struct MenuItem{
     int stock;
 };
 struct Money{
+    int id;
     int value;
     int quantity;
-    int max;
 };
 class VendingMachineDB{
 private:
