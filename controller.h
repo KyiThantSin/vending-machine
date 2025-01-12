@@ -296,6 +296,34 @@ public:
         return false;
     }
 
+   void reduceChangesCoinQuantity(int coinValue, int quantityToAdd) {
+        string table_name = "changes_" + student_id;
+        string sql = "UPDATE " + table_name + " SET quantity = quantity - 1 WHERE value = ? AND quantity > 0;";
+        sqlite3_stmt *stmt;
+        
+        bool flag = false;
+        flag = isChangesCoinQuantityAtLimit();
+        
+        if(flag) {
+            return;
+        }
+        
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+            sqlite3_bind_int(stmt, 1, coinValue);
+            
+            if (sqlite3_step(stmt) == SQLITE_DONE) {
+                cout << "";
+            } else {
+                cerr << "Failed to update coin quantity for " << coinValue << " THB.\n";
+            }
+            
+            sqlite3_finalize(stmt);
+        } else {
+            cerr << "Error preparing statement for coin quantity update.\n";
+        }
+    }
+    
+    // both user and admin
     void updateCoinQuantity(int coinValue, int quantityToAdd, string tableName){
         string table_name = tableName + student_id;
         string sql = "UPDATE " + table_name + " SET quantity = quantity + ? WHERE value = ?;";
@@ -305,7 +333,6 @@ public:
         flag = isAnyCoinQuantityAtLimit();
 
         if(flag){
-            cout << "Sorry, The collection box is fulled" << endl;
             return;
         }
 

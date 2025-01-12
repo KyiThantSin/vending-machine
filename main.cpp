@@ -4,49 +4,53 @@
 #include "controller.h"
 using namespace std;
 
-class MoneyHandler{
-    private:
-        vector<Money> coins;
-    public:
-        MoneyHandler(VendingMachineDB &db){
+class MoneyHandler
+{
+private:
+    vector<Money> coins;
+
+public:
+    MoneyHandler(VendingMachineDB &db)
+    {
         vector<Money> coinsList = {
             {0, 100, 0},
             {0, 20, 0},
             {0, 10, 0},
-            {0,5,0},
-            {0,1,0}
-        };
+            {0, 5, 0},
+            {0, 1, 0}};
 
         vector<Money> changesList = {
             {0, 100, 30},
             {0, 20, 30},
             {0, 10, 30},
-            {0,5,30},
-            {0,1, 30}
-        };
+            {0, 5, 30},
+            {0, 1, 30}};
 
-        for (const auto &coin : coinsList){
+        for (const auto &coin : coinsList)
+        {
             db.insertToCollections(coin.value, coin.quantity);
         };
-        for(const auto &coin : changesList){
+        for (const auto &coin : changesList)
+        {
             db.insertToChangesBox(coin.value, coin.quantity);
         };
     }
 };
-class Menu{
+class Menu
+{
 private:
     vector<MenuItem> items;
 
 public:
-    Menu(VendingMachineDB &db){
+    Menu(VendingMachineDB &db)
+    {
         vector<MenuItem> menu = {
             {0, "Coffee", 20.0, 10},
             {0, "Tea", 22.0, 10},
             {0, "Milk", 15.00, 10},
             {0, "Soda", 14.00, 10},
             {0, "Smoothies", 24.00, 10},
-            {0, "Water", 8.00, 10}
-        };
+            {0, "Water", 8.00, 10}};
 
         for (const auto &item : menu)
         {
@@ -56,7 +60,8 @@ public:
         items = db.getItems();
     }
 
-    void display(){
+    void display()
+    {
         cout << setw(20) << "****Menu****" << endl;
         cout << setw(5) << "Code" << setw(20) << "Name" << setw(20) << "Price" << endl;
         if (items.empty())
@@ -65,17 +70,20 @@ public:
             return;
         }
         for (auto item : items)
-        {   
+        {
             cout << setw(5) << item.id << setw(20) << item.name << setw(20) << fixed << setprecision(2) << item.price << endl;
         }
     }
 
-    bool isOutOfStock(){
+    bool isOutOfStock()
+    {
         int totalItems = items.size();
         int outOfStockCount = 0;
 
-        for(const auto& item: items){
-            if(item.stock <= 0){
+        for (const auto &item : items)
+        {
+            if (item.stock <= 0)
+            {
                 outOfStockCount++;
             }
         }
@@ -83,7 +91,8 @@ public:
     }
 };
 
-class User{
+class User
+{
 private:
     int slected_code;
     MenuItem item;
@@ -122,6 +131,39 @@ public:
         return false;
     }
 
+    void calculateAndDispenseChange(VendingMachineDB &db, double changeAmount){
+        vector<int> denominations;
+
+        if (changeAmount >= 100){
+            denominations = {100, 20, 10, 5, 1};
+        }
+        else if (changeAmount >= 20){
+            denominations = {20, 10, 5, 1};
+        }
+        else if(changeAmount >= 10){
+            denominations = {10, 5, 1};
+        }else{
+            denominations = {5,1};
+        }
+
+        // calculate
+        for (int denom : denominations)
+        {
+            while (changeAmount >= denom)
+            {
+                if (!db.isChangesCoinQuantityAtLimit()){
+                    db.reduceChangesCoinQuantity(denom, 1);
+                    changeAmount -= denom;
+                }
+                else{
+                    cout << "Unable to provide exact change. Transaction cancelled." << endl;
+                    cout << "Returning original payment: " << payment << " THB" << endl;
+                    return;
+                }
+            }
+        }
+    }
+
     void purchase(VendingMachineDB &db)
     {
         int amount = 0;
@@ -130,19 +172,22 @@ public:
         {
             cout << "Please enter the payment amount (100 THB, 20 THB, 10 THB, 5 THB, 1 THB): ";
             cin >> amount;
-            
+
             bool flag = false;
             bool changesFlag = false;
             flag = db.isAnyCoinQuantityAtLimit();
             changesFlag = db.isChangesCoinQuantityAtLimit();
 
-            if(flag){
+            if (flag)
+            {
                 cout << "--------------------------" << endl;
                 cout << "Sorry, The collection box is fulled. We can't purchase the item at the moment." << endl;
                 cout << "Please took your previous inserted Amount: " << amount << " THB" << endl;
                 cout << "--------------------------" << endl;
                 return;
-            }else if(changesFlag){
+            }
+            else if (changesFlag)
+            {
                 cout << "--------------------------" << endl;
                 cout << "Sorry, The Changes box is empty. We can't purchase the item at the moment." << endl;
                 cout << "Please took your previous inserted Amount: " << amount << " THB" << endl;
@@ -150,7 +195,8 @@ public:
                 return;
             }
 
-            if(cin.fail()){
+            if (cin.fail())
+            {
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 cout << "Please enter a valid input." << endl;
@@ -167,7 +213,11 @@ public:
                     cout << "Payment Succeess!. Change: " << payment - item.price << " THB" << endl;
                     db.updateStockById(item.id);
                     cout << "--------------------------" << endl;
-
+                    double changeAmount = payment - item.price;
+                    if (changeAmount > 0)
+                    {
+                        calculateAndDispenseChange(db, changeAmount);
+                    }
                     break;
                 }
                 else
@@ -195,7 +245,7 @@ int main()
     db.createChangesBoxTable();
     Menu menu(db);
     MoneyHandler coins(db);
-    
+
     while (true)
     {
         cout << "Please choose a login modes \n (1).User (Selling Mode) \n (2).Admin \n (3).Exit \n Your choice: ";
@@ -208,11 +258,13 @@ int main()
             bool flag = false;
 
             flag = db.isAnyCoinQuantityAtLimit();
-    
-            if(flag){
+
+            if (flag)
+            {
                 break;
             }
-            if(menu.isOutOfStock()){
+            if (menu.isOutOfStock())
+            {
                 cout << "--------------------------" << endl;
                 cout << "Items are OUT OF STOCK at the moment." << endl;
                 cout << "--------------------------" << endl;
