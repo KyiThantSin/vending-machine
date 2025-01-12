@@ -165,6 +165,34 @@ public:
         }
     }
 
+   void updateItemStockById(int id, int quantityToAdd){
+    string table_name = "stock_" + student_id;
+    string sql = "UPDATE " + table_name + " SET stock = stock + ? WHERE id = ?;";
+    sqlite3_stmt *stmt;
+
+    if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK)
+    {
+        sqlite3_bind_int(stmt, 1, quantityToAdd);
+        sqlite3_bind_int(stmt, 2, id);
+
+        if (sqlite3_step(stmt) == SQLITE_DONE)
+        {
+            cout << "Stock updated successfully for item ID " << id << ".\n";
+        }
+        else
+        {
+            cerr << "Failed to update stock.\n";
+        }
+
+        sqlite3_finalize(stmt);
+    }
+    else
+    {
+        cerr << "Error preparing statement for stock update.\n";
+    }
+}
+
+
     // money
     void createCollectionBoxTable(){
         string table_name = "collections_" + student_id;

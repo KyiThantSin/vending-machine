@@ -96,7 +96,7 @@ public:
             string name;
             double price;
             int stock;
-            cout << "Enter the item name: ";
+            cout << "Enter the product name: ";
             getline(cin, name);
             cout << "Enter the price: ";
             cin >> price;
@@ -104,7 +104,17 @@ public:
             cin >> stock;
 
             addingNewStock(db, name, price, stock);
-        } else if(choice == "7"){
+        }else if(choice == "2"){
+            int selected_id;
+            int amount;
+            cout << "Enter the product Id: ";
+            cin >> selected_id;
+
+            cout << "Enter the stock: ";
+            cin >> amount;
+
+            db.updateItemStockById(selected_id, amount);
+        }else if(choice == "7"){
             return;
         } else{
             cout << "Please enter a valid input." << endl;
