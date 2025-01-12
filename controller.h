@@ -201,4 +201,32 @@ public:
             std::cerr << "Error preparing statement.\n";
         }
     }
+
+    void updateCoinQuantity(int coinValue, int quantityToAdd){
+        string table_name = "collections_" + student_id;
+        string sql = "UPDATE " + table_name + " SET quantity = quantity + ? WHERE value = ?;";
+        sqlite3_stmt *stmt;
+
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK)
+        {
+            sqlite3_bind_int(stmt, 2, coinValue);
+            sqlite3_bind_int(stmt, 1, quantityToAdd); 
+
+            if (sqlite3_step(stmt) == SQLITE_DONE)
+            {
+                cout << "Coin quantity updated successfully for " << coinValue << " THB.\n";
+            }
+            else
+            {
+                cerr << "Failed to update coin quantity for " << coinValue << " THB.\n";
+            }
+
+            sqlite3_finalize(stmt);
+        }
+        else
+        {
+            cerr << "Error preparing statement for coin quantity update.\n";
+        }
+    }
+
 };

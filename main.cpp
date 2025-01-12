@@ -119,6 +119,7 @@ public:
             {
                 payment += amount;
                 cout << "Payment accepted. Total payment so far: " << payment << " THB.\n";
+                db.updateCoinQuantity(amount, 1);
 
                 if (payment >= item.price)
                 {
