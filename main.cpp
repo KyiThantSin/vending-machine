@@ -109,6 +109,18 @@ public:
             cout << "Please enter the payment amount (100 THB, 20 THB, 10 THB, 5 THB, 1 THB): ";
             cin >> amount;
 
+            bool flag = false;
+
+            flag = db.isAnyCoinQuantityAtLimit();
+
+            if(flag){
+                cout << "--------------------------" << endl;
+                cout << "Sorry, The collection box is fulled. We can't purchase the item at the moment." << endl;
+                cout << "Please took your previous inserted Amount: " << amount << " THB" << endl;
+                cout << "--------------------------" << endl;
+                return;
+            }
+
             if(cin.fail()){
                 cin.clear();
                 cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -120,6 +132,7 @@ public:
                 payment += amount;
                 cout << "Payment accepted. Total payment so far: " << payment << " THB.\n";
                 db.updateCoinQuantity(amount, 1);
+                cout << "--------------------------" << endl;
 
                 if (payment >= item.price)
                 {
