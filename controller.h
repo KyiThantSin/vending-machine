@@ -267,6 +267,35 @@ public:
         return false;
     }
 
+    bool isChangesCoinQuantityAtLimit(){
+        string table_name = "changes_" + student_id;
+        string check_sql = "SELECT value, quantity FROM " + table_name + ";";
+        sqlite3_stmt *stmt;
+
+        if (sqlite3_prepare_v2(db, check_sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK)
+        {
+            while (sqlite3_step(stmt) == SQLITE_ROW)
+            {
+                int coinValue = sqlite3_column_int(stmt, 0); 
+                int currentQuantity = sqlite3_column_int(stmt, 1);
+
+                if (currentQuantity <= 0)
+                {
+                    // cout << "Coin " << coinValue << " THB has reached the limit of 30.\n";
+                    sqlite3_finalize(stmt);
+                    return true;
+                }
+            }
+            sqlite3_finalize(stmt);
+        }
+        else
+        {
+            cerr << "Error querying coin quantities.\n";
+        }
+
+        return false;
+    }
+
     void updateCoinQuantity(int coinValue, int quantityToAdd, string tableName){
         string table_name = tableName + student_id;
         string sql = "UPDATE " + table_name + " SET quantity = quantity + ? WHERE value = ?;";

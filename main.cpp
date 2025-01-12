@@ -130,14 +130,21 @@ public:
         {
             cout << "Please enter the payment amount (100 THB, 20 THB, 10 THB, 5 THB, 1 THB): ";
             cin >> amount;
-            cout << "--------------------------" << endl;
             
             bool flag = false;
+            bool changesFlag = false;
             flag = db.isAnyCoinQuantityAtLimit();
+            changesFlag = db.isChangesCoinQuantityAtLimit();
 
             if(flag){
                 cout << "--------------------------" << endl;
                 cout << "Sorry, The collection box is fulled. We can't purchase the item at the moment." << endl;
+                cout << "Please took your previous inserted Amount: " << amount << " THB" << endl;
+                cout << "--------------------------" << endl;
+                return;
+            }else if(changesFlag){
+                cout << "--------------------------" << endl;
+                cout << "Sorry, The Changes box is empty. We can't purchase the item at the moment." << endl;
                 cout << "Please took your previous inserted Amount: " << amount << " THB" << endl;
                 cout << "--------------------------" << endl;
                 return;
@@ -203,9 +210,6 @@ int main()
             flag = db.isAnyCoinQuantityAtLimit();
     
             if(flag){
-                cout << "--------------------------" << endl;
-                cout << "Sorry, The collection box is fulled. We can't purchase the items at the moment." << endl;
-                cout << "--------------------------" << endl;
                 break;
             }
             if(menu.isOutOfStock()){
