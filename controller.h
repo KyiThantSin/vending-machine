@@ -231,8 +231,8 @@ public:
         return false;
     }
 
-    void updateCoinQuantity(int coinValue, int quantityToAdd){
-        string table_name = "collections_" + student_id;
+    void updateCoinQuantity(int coinValue, int quantityToAdd, string tableName){
+        string table_name = tableName + student_id;
         string sql = "UPDATE " + table_name + " SET quantity = quantity + ? WHERE value = ?;";
         sqlite3_stmt *stmt;
         bool flag = false;

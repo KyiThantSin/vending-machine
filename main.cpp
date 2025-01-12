@@ -108,6 +108,7 @@ public:
         {
             cout << "Please enter the payment amount (100 THB, 20 THB, 10 THB, 5 THB, 1 THB): ";
             cin >> amount;
+            cout << "--------------------------" << endl;
 
             bool flag = false;
 
@@ -131,13 +132,14 @@ public:
             {
                 payment += amount;
                 cout << "Payment accepted. Total payment so far: " << payment << " THB.\n";
-                db.updateCoinQuantity(amount, 1);
-                cout << "--------------------------" << endl;
+                db.updateCoinQuantity(amount, 1, "collections_");
 
                 if (payment >= item.price)
                 {
                     cout << "Payment Succeess!. Change: " << payment - item.price << " THB" << endl;
                     db.updateStockById(item.id);
+                    cout << "--------------------------" << endl;
+
                     break;
                 }
                 else
