@@ -7,7 +7,6 @@ using namespace std;
 class MoneyHandler{
 private:
     vector<Money> coins;
-
 public:
     MoneyHandler(VendingMachineDB &db){
         vector<Money> coinsList = {
@@ -136,6 +135,26 @@ public:
             }
 
             db.updateCoinQuantity(selected_value, quantity, "changes_");
+        }else if(choice == "4"){
+            vector<Money> coins;
+            cout << "****Collections Box****" << endl;
+            coins = db.getCoins("collections_");
+            
+            cout << setw(5) << "ID" << setw(20) << "Value(THB)" << setw(20) << "Quantity" << endl;
+            
+            for (const auto &coin : coins){
+                cout << setw(5) << coin.id << setw(20) << coin.value << setw(20) << coin.quantity << endl;
+            }      
+        }else if(choice == "5"){
+            vector<Money> coins;
+            cout << "****Changes Box****" << endl;
+            coins = db.getCoins("changes_");
+            
+            cout << setw(5) << "ID" << setw(20) << "Value(THB)" << setw(20) << "Quantity" << endl;
+            
+            for (const auto &coin : coins){
+                cout << setw(5) << coin.id << setw(20) << coin.value << setw(20) << coin.quantity << endl;
+            }   
         }
         else if(choice == "7"){
             return;

@@ -387,4 +387,31 @@ public:
         }
     }
 
+     vector<Money> getCoins(string tableName){
+        vector<Money> coins;
+        string table_name = tableName + student_id;
+        string sql = "SELECT * FROM " + table_name + ";";
+        sqlite3_stmt *stmt;
+
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK)
+        {
+            while (sqlite3_step(stmt) == SQLITE_ROW)
+            {
+                Money coin;
+                coin.id = sqlite3_column_int(stmt, 0);
+                coin.value = sqlite3_column_int(stmt, 1);
+                coin.quantity = sqlite3_column_int(stmt, 2);
+
+                coins.push_back(coin);
+            }
+            sqlite3_finalize(stmt);
+        }
+        else
+        {
+            std::cerr << "Error fetching coins.\n";
+        }
+
+        return coins;
+    };
+
 };
