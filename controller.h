@@ -322,7 +322,7 @@ public:
         return false;
     }
 
-   void reduceChangesCoinQuantity(int coinValue, int quantityToAdd) {
+   void reduceChangesCoinQuantity(int coinValue) {
         string table_name = "changes_" + student_id;
         string sql = "UPDATE " + table_name + " SET quantity = quantity - 1 WHERE value = ? AND quantity > 0;";
         sqlite3_stmt *stmt;
@@ -414,4 +414,28 @@ public:
         return coins;
     };
 
+    void collectCollections() {
+        string table_name = "collections_" + student_id;
+        string sql = "UPDATE " + table_name + " SET quantity = 0 WHERE quantity > 0;";
+        sqlite3_stmt *stmt;
+        vector<Money> coins;
+        coins = getCoins("collections_");
+        double total = 0.0;
+
+        for (const auto &coin : coins){
+            total += ( coin.value * coin.quantity);
+        };
+            
+        if (sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr) == SQLITE_OK) {
+            if (sqlite3_step(stmt) == SQLITE_DONE) {
+                cout << "Successfully Collected " << total << " THB.\n";
+            } else {
+                cerr << "Failed to update coin quantities to 0.\n";
+            }
+            
+            sqlite3_finalize(stmt);
+        } else {
+            cerr << "Error preparing statement for updating coin quantities.\n";
+        }
+    }
 };

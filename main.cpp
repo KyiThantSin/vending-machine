@@ -140,7 +140,7 @@ public:
             cout << "****Collections Box****" << endl;
             coins = db.getCoins("collections_");
             
-            cout << setw(5) << "ID" << setw(20) << "Value(THB)" << setw(20) << "Quantity" << endl;
+            cout << setw(5) << "ID" << setw(20) << "Value(THB)" << setw(20) << "Quantity(Max 30)" << endl;
             
             for (const auto &coin : coins){
                 cout << setw(5) << coin.id << setw(20) << coin.value << setw(20) << coin.quantity << endl;
@@ -150,11 +150,14 @@ public:
             cout << "****Changes Box****" << endl;
             coins = db.getCoins("changes_");
             
-            cout << setw(5) << "ID" << setw(20) << "Value(THB)" << setw(20) << "Quantity" << endl;
+            cout << setw(5) << "ID" << setw(20) << "Value(THB)" << setw(20) << "Quantity(Max 30)" << endl;
             
             for (const auto &coin : coins){
                 cout << setw(5) << coin.id << setw(20) << coin.value << setw(20) << coin.quantity << endl;
             }   
+        }
+        else if(choice == "6"){
+            db.collectCollections();
         }
         else if(choice == "7"){
             return;
@@ -228,7 +231,7 @@ public:
             while (changeAmount >= denom)
             {
                 if (!db.isChangesCoinQuantityAtLimit()){
-                    db.reduceChangesCoinQuantity(denom, 1);
+                    db.reduceChangesCoinQuantity(denom);
                     changeAmount -= denom;
                 }
                 else{
