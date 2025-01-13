@@ -325,7 +325,7 @@ int main(){
     MoneyHandler coins(db);
 
     while (true){
-        cout << "Please choose a login modes \n (1).User (Selling Mode) \n (2).Admin \n (3).Exit \n Your choice: ";
+        cout << "Please choose a login mode \n (1).User (Selling Mode) \n (2).Admin \n (3).Exit \n Your choice: ";
         cin >> choice;
 
         if(choice == "1"){
