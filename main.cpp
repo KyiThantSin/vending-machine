@@ -110,11 +110,34 @@ public:
             cout << "Enter the product Id: ";
             cin >> selected_id;
 
-            cout << "Enter the stock: ";
+            cout << "Enter the stock (0-20): ";
             cin >> amount;
 
+            while(amount < 0 || amount >220){
+                cout << "You can't filled more than 20 quantity" << endl;
+                cout << "Enter the quantity (0-30): ";
+                cin >> amount;
+            }
+
             db.updateItemStockById(selected_id, amount);
-        }else if(choice == "7"){
+        }else if(choice == "3"){
+            int selected_value;
+            int quantity;
+            cout << "Enter the Coin Value: ";
+            cin >> selected_value;
+
+            cout << "Enter the quantity (0-30): ";
+            cin >> quantity;
+
+            while(quantity < 0 || quantity >30){
+                cout << "You can't filled more than 30 coins" << endl;
+                cout << "Enter the quantity (0-30): ";
+                cin >> quantity;
+            }
+
+            db.updateCoinQuantity(selected_value, quantity, "changes_");
+        }
+        else if(choice == "7"){
             return;
         } else{
             cout << "Please enter a valid input." << endl;

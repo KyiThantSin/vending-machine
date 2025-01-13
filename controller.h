@@ -306,9 +306,8 @@ public:
                 int coinValue = sqlite3_column_int(stmt, 0); 
                 int currentQuantity = sqlite3_column_int(stmt, 1);
 
-                if (currentQuantity <= 0)
+                if (currentQuantity <= 0 || currentQuantity > 30)
                 {
-                    // cout << "Coin " << coinValue << " THB has reached the limit of 30.\n";
                     sqlite3_finalize(stmt);
                     return true;
                 }
@@ -332,6 +331,7 @@ public:
         flag = isChangesCoinQuantityAtLimit();
         
         if(flag) {
+            cout << "Coin " << coinValue << " THB has reached the limit.\n";
             return;
         }
         
@@ -356,10 +356,12 @@ public:
         string sql = "UPDATE " + table_name + " SET quantity = quantity + ? WHERE value = ?;";
         sqlite3_stmt *stmt;
         bool flag = false;
+        bool changesFlag = false;
 
         flag = isAnyCoinQuantityAtLimit();
+        changesFlag = isChangesCoinQuantityAtLimit();
 
-        if(flag){
+        if(flag || changesFlag){
             return;
         }
 
@@ -374,7 +376,7 @@ public:
             }
             else
             {
-                cerr << "Failed to update coin quantity for " << coinValue << " THB.\n";
+                cerr << "Cannot update coin quantity for " << coinValue << " THB. A limit has already been reached.\n";
             }
 
             sqlite3_finalize(stmt);
