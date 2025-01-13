@@ -184,6 +184,14 @@ public:
         cin >> slected_code;
         cout << endl;
 
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Please enter a valid input." << endl;
+            return;
+        }
+
         item = db.getItemById(slected_code);
         if (item.stock <= 0)
         {
