@@ -31,7 +31,7 @@ A C++ implementation of a vending machine management system with SQLite database
 ### Installation
 1. Clone the repository
 ```bash
-git clone https://github.com/KyiThantSin/Vending_Machine.git
+git clone https://github.com/KyiThantSin/vending-machine.git
 ```
 2. Navigate to the project directory
 ```bash
